@@ -32,6 +32,22 @@ class App extends Component{
     console.log("2");
     return(
     <div className = 'App'>
+    <input 
+    className='search-box' 
+    type="search" 
+    placeholder='Search Monsters'
+    onChange={(e) =>{
+      console.log(e.target.value);
+      const toLowerCase = e.target.value.toLowerCase()
+      const filterMonster = this.state.monsters.filter((monster) =>{
+          return monster.name.toLowerCase().includes(toLowerCase)
+      })
+
+      this.setState(()=>{
+        return {monsters : filterMonster}
+      })
+    }}
+    />
       {this.state.monsters.map((monster)=>{
         return(
         <div key={monster.id}>
