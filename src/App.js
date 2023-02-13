@@ -1,7 +1,7 @@
 import { Component } from 'react';
-//import logo from './logo.svg';
 import './App.css';
-
+import CardList from "./component/card-list/CardList"
+import SearchBox from './component/search-box/searchBox';
 
 class App extends Component{
 
@@ -11,11 +11,9 @@ class App extends Component{
     this.state = {
       monsters:[],
     };
-    console.log("1");
   }
 
   componentDidMount(){
-    console.log("3");
     fetch('https://jsonplaceholder.typicode.com/users')
     .then((response)=>response.json())
     .then((users) => {
@@ -26,38 +24,29 @@ class App extends Component{
       )
     })
   }
-  
+
+  onSearchChange = (event) => {
+    const searchField = event.target.value.toLocaleLowerCase()
+    this.setState(()=>{
+      return { searchField }
+    })
+  }
   
   render(){
-    console.log("2");
-    return(
-    <div className = 'App'>
-    <input 
-    className='search-box' 
-    type="search" 
-    placeholder='Search Monsters'
-    onChange={(e) =>{
-      console.log(e.target.value);
-      const toLowerCase = e.target.value.toLowerCase()
-      const filterMonster = this.state.monsters.filter((monster) =>{
-          return monster.name.toLowerCase().includes(toLowerCase)
-      })
-
-      this.setState(()=>{
-        return {monsters : filterMonster}
-      })
-    }}
-    />
-      {this.state.monsters.map((monster)=>{
-        return(
-        <div key={monster.id}>
-          <h1>{monster.name}</h1>
-        </div>
-      )
-      })
-    }
-    </div>
+    const { monsters,searchField } = this.state
+    const { onSearchChange } = this
+    
+    const filterMonster = searchField ? monsters.filter((monster) =>{
+      return monster.name.toLocaleLowerCase().includes(searchField)
+    }):monsters
+    
+  return(
+  <div className = 'App'>
+    <SearchBox onChangeHandler={onSearchChange} className='search-box-monsters' placeholder='Search monsters'/>
+    <CardList monsters={filterMonster} />
+  </div>
     );
   }
 }
+
 export default App;
